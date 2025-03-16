@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitaj na azúrovej stránke!</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #aef0ff, #d6faff);
+            color: #333;
+            text-align: center;
+        }
+        header {
+            padding: 2rem;
+            background-color: #00bfff;
+            color: #fff;
+            font-size: 2rem;
+            animation: slideIn 2s ease-out;
+        }
+        section {
+            padding: 2rem;
+        }
+        .animated-box {
+            width: 150px;
+            height: 150px;
+            margin: 2rem auto;
+            background-color: #48d1cc;
+            border-radius: 20px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+        }
+        img {
+            max-width: 300px;
+            margin-top: 2rem;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+    <header>💙 Vitaj na azúrovej stránke 💙</header>
+    <section>
+        <p>Táto stránka používa krásnu azúrovú farebnú schému s animáciami a konfetami.</p>
+        <div class="animated-box"></div>
+        <p>Pozri si aj tento náhodný obrázok:</p>
+        <img src="https://picsum.photos/300/200" alt="Náhodný obrázok">
+    </section>
+
+    <script>
+        // Konfety
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const confetti = [];
+        for (let i = 0; i < 100; i++) {
+            confetti.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 6 + 2,
+                d: Math.random() * 50 + 10,
+                color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+                tilt: Math.random() * 10 - 5,
+                tiltAngle: 0,
+                tiltAngleIncrement: Math.random() * 0.07 + 0.05
+            });
+        }
+
+        function drawConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confetti.forEach(c => {
+                ctx.beginPath();
+                ctx.lineWidth = c.r;
+                ctx.strokeStyle = c.color;
+                ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+                ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r);
+                ctx.stroke();
+            });
+            updateConfetti();
+        }
+
+        function updateConfetti() {
+            confetti.forEach(c => {
+                c.y += Math.cos(c.d / 10) + 1;
+                c.tiltAngle += c.tiltAngleIncrement;
+                c.tilt = Math.sin(c.tiltAngle) * 15;
+
+                if (c.y > canvas.height) {
+                    c.y = -10;
+                    c.x = Math.random() * canvas.width;
+                }
+            });
+        }
+
+        function animate() {
+            drawConfetti();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
